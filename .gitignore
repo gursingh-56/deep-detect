@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.venv/
+env/
+
+# Node
+node_modules/
+dist/
+*.log
+
+# Editors
+.vs/
+.vscode/
+.idea/
+
+# Local database and archives
+db.sqlite3
+*.rar
+*.7z
+
+# Model weights and user uploads are too large for git
+*.pt
+*.pth
