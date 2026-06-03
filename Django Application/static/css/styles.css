@@ -1,0 +1,315 @@
+:root {
+    --dark-navy: #0a192f;
+    --accent-cyan: #64ffda;
+    --accent-red: #ff4780;
+    --light-slate: #ccd6f6;
+    --slate: #8892b0;
+    --card-bg: rgba(13, 30, 57, 0.75); /* Semi-transparent card background */
+    --card-border: rgba(100, 255, 218, 0.1);
+    --glow-color: rgba(100, 255, 218, 0.3);
+    --glow-color-red: rgba(255, 71, 128, 0.5);
+}
+
+body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--dark-navy);
+    color: var(--slate);
+    font-family: 'Rajdhani', sans-serif; /* A more subtle futuristic font */
+    overflow-x: hidden; /* Prevent horizontal scroll from animations */
+}
+
+.main-content {
+    flex-grow: 1;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: var(--light-slate);
+    font-weight: 600;
+}
+
+.text-accent {
+    color: var(--accent-cyan);
+}
+
+/* Navbar Styling */
+.navbar {
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--card-border);
+    box-shadow: 0 0 20px rgba(0,0,0,0.5);
+    z-index: 1030; /* Ensure navbar is above other content */
+}
+
+.navbar .navbar-brand,
+.navbar .nav-link {
+    transition: color 0.3s ease;
+}
+
+.navbar .nav-link:hover,
+.navbar .nav-link.active {
+    color: var(--accent-cyan) !important;
+}
+
+.navbar .navbar-toggler {
+    border-color: var(--card-border);
+}
+
+/* Footer Styling */
+.footer {
+    background-color: var(--card-bg);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--card-border);
+}
+
+.footer a.text-muted:hover {
+    color: var(--accent-cyan) !important;
+}
+
+
+/* Card Styling */
+.card {
+    background-color: var(--card-bg);
+    border: 1px solid var(--card-border);
+    backdrop-filter: blur(10px);
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 15px var(--glow-color);
+}
+
+/* Form Styling */
+.form-control {
+    background-color: var(--dark-navy);
+    border-color: var(--card-border);
+    color: var(--light-slate);
+}
+
+.form-control:focus {
+    background-color: var(--dark-navy);
+    border-color: var(--accent-cyan);
+    color: var(--light-slate);
+    box-shadow: 0 0 10px var(--glow-color);
+}
+
+.form-label {
+    color: var(--slate);
+}
+
+/* Button Styling */
+.btn-primary {
+    background-color: transparent;
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+    transition: all 0.3s ease;
+    animation: glow-pulse 2s infinite alternate;
+}
+
+.btn-primary:hover, .btn-primary:focus {
+    background-color: var(--glow-color);
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+    box-shadow: 0 0 20px var(--glow-color);
+    animation: none; /* Stop pulse on hover */
+}
+
+/* Slider Styling */
+.ui-slider {
+    background: var(--dark-navy);
+    border: 1px solid var(--card-border);
+}
+.ui-slider-handle {
+    background: var(--accent-cyan);
+    border: none;
+}
+.ui-slider-range {
+    background: var(--accent-cyan);
+}
+
+
+/* Styling for images and video on predict page */
+canvas {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.horizontal-scroll-container {
+  white-space: nowrap;
+  width: 100%;
+  padding: 1rem;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.img-thumbnail {
+    background-color: var(--card-bg);
+    border-color: var(--card-border);
+    margin-right: 1rem;
+    height: 150px;
+    width: auto;
+}
+
+/* Result Card Specific Styling */
+.result-text-real { color: var(--accent-cyan); }
+.result-text-fake { color: var(--accent-red); }
+
+.result-card-real {
+    border-color: var(--accent-cyan);
+    box-shadow: 0 0 25px var(--glow-color);
+}
+.result-card-fake {
+    border-color: var(--accent-red);
+    box-shadow: 0 0 25px var(--glow-color-red);
+}
+
+/* Interactive Showcase Section */
+.showcase-item {
+    position: relative;
+    overflow: hidden;
+    border-radius: 0.5rem;
+    box-shadow: 0 0 15px rgba(0,0,0,0.5);
+    transition: box-shadow 0.3s ease;
+}
+
+.showcase-item:hover {
+    box-shadow: 0 0 25px var(--glow-color);
+}
+
+.showcase-item video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+}
+
+.showcase-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(10, 25, 47, 0.7); /* Dark semi-transparent background */
+    opacity: 0;
+    transition: opacity 0.4s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.5rem;
+}
+
+.showcase-item:hover .showcase-overlay {
+    opacity: 1;
+}
+
+.showcase-overlay-dots {
+    width: 100%;
+    height: 100%;
+    background-image: radial-gradient(var(--accent-cyan) 15%, transparent 16%);
+    background-size: 20px 20px; /* Size of the dots and spacing */
+    opacity: 0.6; /* Make dots slightly transparent */
+}
+
+.showcase-label {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    padding: 0.3rem 0.8rem;
+    border-radius: 0.3rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    backdrop-filter: blur(5px);
+    background-color: rgba(0, 0, 0, 0.4);
+    border: 1px solid var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.showcase-label.real {
+    border-color: var(--accent-cyan);
+    color: var(--accent-cyan);
+}
+
+.showcase-label.fake {
+    border-color: var(--accent-red);
+    color: var(--accent-red);
+}
+
+
+/* === Hero Section Specific Styles (Animated) === */
+.hero-section {
+    position: relative;
+    overflow: hidden; /* Ensure background animations stay within section */
+    padding-top: 100px;
+    padding-bottom: 100px;
+    z-index: 1;
+}
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(45deg, rgba(100, 255, 218, 0.05), rgba(10, 25, 47, 0.9) 50%, rgba(100, 255, 218, 0.05));
+    background-size: 400% 400%;
+    animation: animateBackground 15s ease infinite;
+    z-index: -1;
+    filter: blur(5px);
+}
+
+@keyframes animateBackground {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+.hero-section h1 {
+    font-size: 3.5rem;
+    position: relative;
+    display: inline-block;
+    color: var(--light-slate);
+    text-shadow: 0 0 10px var(--accent-cyan), 0 0 20px var(--accent-cyan);
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 2px solid var(--accent-cyan); /* Typing caret */
+    animation: typing 3s steps(30, end) forwards, blinkCaret 0.75s step-end infinite;
+    width: 0; /* Start with zero width for typing effect */
+    max-width: 100%;
+}
+
+@keyframes typing {
+    from { width: 0 }
+    to { width: 100% }
+}
+
+@keyframes blinkCaret {
+    from, to { border-color: transparent }
+    50% { border-color: var(--accent-cyan); }
+}
+
+.hero-section p.lead {
+    text-shadow: 0 0 5px rgba(100, 255, 218, 0.2);
+    animation: fadeIn 2s ease-out forwards;
+    animation-delay: 3.5s; /* Delay after typing */
+    opacity: 0; /* Start invisible */
+}
+
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+
+/* Button Glow Pulse */
+@keyframes glow-pulse {
+    0% {
+        box-shadow: 0 0 5px var(--accent-cyan), 0 0 10px var(--accent-cyan);
+    }
+    100% {
+        box-shadow: 0 0 15px var(--accent-cyan), 0 0 25px var(--accent-cyan);
+    }
+}

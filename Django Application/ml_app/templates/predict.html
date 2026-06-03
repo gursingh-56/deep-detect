@@ -1,0 +1,227 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Handle No Faces Detected -->
+    {% if no_faces %}
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card text-center">
+                <div class="card-body p-5">
+                    <i class="bi bi-emoji-frown fs-1 text-warning"></i>
+                    <h4 class="mt-3 text-light-slate">No Faces Detected</h4>
+                    <p class="text-muted">The AI could not detect any faces in the provided video. This can happen if faces are too small, obscured, or at an unusual angle. Please ensure faces are prominent in your video.</p>
+                    <a href="{% url 'ml_app:home' %}" class="btn btn-primary mt-4">Upload Another Video</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    
+    <h2 class="text-center mb-5 text-accent">Deepfake Analysis Report</h2>
+    
+    <!-- Prediction Result Card -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-md-8">
+            <div class="card text-center {% if output == 'REAL' %}result-card-real{% else %}result-card-fake{% endif %}">
+                <div class="card-body p-5">
+                    <h5 class="text-uppercase mb-2">Verdict</h5>
+                    <h1 class="display-1 fw-bold result-text-{% if output == 'REAL' %}real{% else %}fake{% endif %}">{{ output }}</h1>
+                    <p class="lead fw-bold text-light-slate">Confidence: {{ confidence }}%</p>
+                    {% if output == 'REAL' %}
+                        <i class="bi bi-shield-check fs-1 result-text-real mt-3"></i>
+                    {% else %}
+                        <i class="bi bi-shield-exclamation fs-1 result-text-fake mt-3"></i>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Video Player and FaceAPI Overlay -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-play-btn-fill me-2"></i>Original Video with Real-time Detections</div>
+                <div class="card-body text-center p-2">
+                    <div style="position: relative; display: inline-block; width: 100%; max-width: 800px;">
+                        <video id="predict-media" class="img-fluid" controls style="max-width: 100%; height: auto; border-radius: .25rem;">
+                            <source src="{{ MEDIA_URL }}{{ original_video }}" type="video/mp4" codecs="avc1.4d002a" />
+                            Your browser does not support the video tag.
+                        </video>
+                        <canvas id="face-api-canvas" style="position: absolute; top: 0; left: 0;"></canvas>
+                    </div>
+                    <p class="text-muted mt-3"><small>Play the video to see real-time face detections and the AI's verdict overlayed.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Explanation Sections -->
+    <div class="row justify-content-center mb-5 g-4">
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-question-circle-fill me-2"></i>Why it's {{ output }}</div>
+                <div class="card-body">
+                    {% if output == 'REAL' %}
+                        <p>Based on our deep learning analysis, the video exhibits consistent facial features, natural movements, and physiological markers that align with genuine human behavior. No discernible patterns indicative of digital manipulation or generative adversarial network (GAN) artifacts were detected across the analyzed frames.</p>
+                        <p class="text-muted"><small>Note: While our model indicates high confidence, no AI system is 100% infallible.</small></p>
+                    {% else %}
+                        <p>Our model detected subtle yet significant inconsistencies in the video. These include atypical facial micro-expressions, irregular skin textures, and temporal discrepancies in facial movements. Specific regions around the eyes and mouth showed abnormal blending, indicative of AI-generated content or manipulation. The confidence score reflects the aggregated anomalies found across the analysis sequence.</p>
+                        <p class="text-muted"><small>Further manual inspection is recommended for critical decisions.</small></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-5">
+            <div class="card h-100">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-cpu-fill me-2"></i>Technique Used</div>
+                <div class="card-body">
+                    <p>The Deepfake Detection System employs a sophisticated deep learning architecture. It primarily utilizes a **ResNeXt50 Convolutional Neural Network (CNN)** for robust feature extraction from individual video frames. These spatial features are then fed into a **Long Short-Term Memory (LSTM) network**, which analyzes temporal inconsistencies and patterns across a sequence of frames. This spatio-temporal analysis allows the model to identify subtle artifacts often missed by frame-only detection methods, crucial for distinguishing between real and synthetically generated content.</p>
+                    <p class="text-muted"><small>The model is trained on diverse datasets of both real and deepfake videos to learn complex discriminative features.</small></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Placeholder for Heatmap/Segmentation -->
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <div class="card">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-compass-fill me-2"></i>AI Focus Areas (Heatmap/Segmentation)</div>
+                <div class="card-body text-center p-4">
+                    <i class="bi bi-exclamation-triangle-fill fs-3 text-warning mb-3"></i>
+                    <p class="lead">Visualization of the AI's focus areas (e.g., heatmaps or segmentation masks) will appear here once backend integration is complete.</p>
+                    <p class="text-muted">This section would show which parts of the face or frame the AI found most relevant for its decision, providing a deeper insight into the detection.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Processed Frames Sections -->
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card mb-4">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-images me-2"></i>Frames Split for Analysis</div>
+                <div class="card-body">
+                    <div class="horizontal-scroll-container">
+                        {% for each_image in preprocessed_images %}
+                            <img src="{% static each_image %}" class="img-thumbnail" alt="Processed Frame">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header text-accent fw-bold"><i class="bi bi-person-bounding-box me-2"></i>Detected Faces</div>
+                <div class="card-body">
+                    <div class="horizontal-scroll-container">
+                        {% for each_image in faces_cropped_images %}
+                            <img src="{% static each_image %}" class="img-thumbnail" alt="Cropped Face">
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block js_scripts %}
+<script src="{% static 'js/face-api.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        const video = document.getElementById("predict-media");
+        if (!video) return; // Exit if video element is not found
+
+        const canvas = document.getElementById("face-api-canvas");
+        if (!canvas) {
+            console.error("Canvas element not found!");
+            return;
+        }
+        
+        // Load FaceAPI models
+        Promise.all([
+            faceapi.nets.ssdMobilenetv1.loadFromUri('/static/json'),
+            faceapi.nets.tinyFaceDetector.loadFromUri("/static/json") // Still loading this for backward compatibility with older FaceAPI versions that might use it
+        ]).then(() => {
+            // Models loaded, ready for video processing
+            // Event listener for when video metadata is loaded, to size canvas
+            video.addEventListener("loadeddata", () => {
+                resizeCanvasAndDraw();
+                // Attach resize listener to window after video is loaded
+                $(window).resize(resizeCanvasAndDraw);
+            });
+
+            // Start processing when video plays
+            video.addEventListener("play", startDetection);
+            video.addEventListener("pause", stopDetection);
+            video.addEventListener("ended", stopDetection);
+        });
+
+        let detectionInterval;
+
+        function resizeCanvasAndDraw() {
+            const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
+            faceapi.matchDimensions(canvas, displaySize);
+            // Optionally clear canvas here if needed for immediate redraw on resize
+            if (!video.paused && !video.ended) {
+                 // Clear and redraw if video is playing
+                 canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+                 // Trigger a detection pass to redraw boxes immediately after resize
+                 detectFaces();
+            } else {
+                canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+            }
+        }
+
+
+        async function detectFaces() {
+            const displaySize = { width: video.offsetWidth, height: video.offsetHeight };
+            const detections = await faceapi.detectAllFaces(video, new faceapi.SsdMobilenetv1Options());
+            const resizedDetections = faceapi.resizeResults(detections, displaySize);
+            
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (resizedDetections.length > 0) {
+                const output = '{{ output }}';
+                const confidence = '{{ confidence }}';
+                // Define box colors matching theme
+                const boxColor = output === 'REAL' ? 'rgb(100, 255, 218)' : 'rgb(255, 71, 128)'; // Accent cyan for REAL, Accent red for FAKE
+
+                resizedDetections.forEach(detection => {
+                    const box = detection.box;
+                    const drawOptions = {
+                        label: `${output} ${confidence}%`,
+                        boxColor: boxColor,
+                        lineWidth: 2,
+                        fontSize: 18,
+                        fontColor: '#fff',
+                        padding: 4,
+                        drawLabelOptions: {
+                            backgroundColor: boxColor,
+                        }
+                    };
+                    const drawBox = new faceapi.draw.DrawBox(box, drawOptions);
+                    drawBox.draw(canvas);
+                });
+            }
+        }
+
+        function startDetection() {
+            if (!detectionInterval) { // Prevent multiple intervals
+                detectionInterval = setInterval(detectFaces, 100); // Run detection every 100ms
+            }
+        }
+
+        function stopDetection() {
+            clearInterval(detectionInterval);
+            detectionInterval = null; // Reset interval ID
+            canvas.getContext("2d").clearRect(0, 0, canvas.width, canvas.height); // Clear canvas
+        }
+    });
+</script>
+{% endblock %}

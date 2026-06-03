@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html class="dark" lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>DeepDetect | Spaced Immersive Hero Section</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap"
+        rel="stylesheet" />
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#ABE7B2",
+                        "background-light": "#f5f7f8",
+                        "background-dark": "#000000",
+                        "card-dark": "#0A0A0A",
+                        "accent-red": "#FF4D4D",
+                        "thermal-orange": "#FF8C00",
+                        "thermal-red": "#D10000",
+                    },
+                    fontFamily: {
+                        "display": ["Space Grotesk", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+    <style type="text/tailwindcss">
+        :root {
+            --primary: #ABE7B2;
+            --accent-red: #FF4D4D;
+            --thermal-orange: #FF8C00;
+            --thermal-red: #D10000;
+        }
+        .grid-pattern {
+            background-image: radial-gradient(circle, rgba(171, 231, 178, 0.07) 1px, transparent 1px);
+            background-size: 60px 60px;
+        }
+        .scan-line {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, var(--primary), transparent);
+            box-shadow: 0 0 30px var(--primary);
+            animation: scan 5s linear infinite;
+        }
+        @keyframes scan {
+            0% { top: 0%; opacity: 0; }
+            5% { opacity: 1; }
+            95% { opacity: 1; }
+            100% { top: 100%; opacity: 0; }
+        }
+        @keyframes pulse-node {
+            0%, 100% { transform: scale(1); opacity: 0.6; }
+            50% { transform: scale(1.6); opacity: 1; }
+        }
+        @keyframes drift {
+            0%, 100% { transform: translate(0, 0) scale(1); opacity: 0.5; }
+            50% { transform: translate(30px, -30px) scale(1.2); opacity: 0.8; }
+        }
+        @keyframes flow {
+            0% { filter: blur(50px) brightness(1); }
+            50% { filter: blur(70px) brightness(1.4); }
+            100% { filter: blur(50px) brightness(1); }
+        }
+        @keyframes progress-fluctuate {
+            0% { width: 45%; }
+            20% { width: 85%; }
+            40% { width: 65%; }
+            60% { width: 95%; }
+            80% { width: 75%; }
+            100% { width: 45%; }
+        }
+        @keyframes pulse-bar {
+            0%, 100% { opacity: 0.8; box-shadow: 0 0 10px var(--primary); }
+            50% { opacity: 1; box-shadow: 0 0 25px var(--primary); }
+        }
+        .heatmap-blob {
+            mix-blend-mode: screen;
+            filter: blur(55px);
+            animation: drift 12s ease-in-out infinite alternate, flow 8s ease-in-out infinite;
+        }
+        .biometric-node {
+            animation: pulse-node 2.5s ease-in-out infinite;
+        }
+        .glass-panel {
+            background: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(24px);
+            border: 1px solid rgba(171, 231, 178, 0.2);
+        }
+        .colorful-face {
+            filter: contrast(1.2) saturate(1.3) brightness(0.9);
+        }
+        .overlay-mask {
+            background: radial-gradient(circle at center, transparent 10%, rgba(0,0,0,0.7) 100%);
+        }
+        .faint-connection {
+            stroke-dasharray: 4;
+            animation: dash 20s linear infinite;
+        }
+        @keyframes dash {
+            to { stroke-dashoffset: -100; }
+        }
+        .anomaly-progress-active {
+            animation: progress-fluctuate 2.5s cubic-bezier(0.4, 0, 0.2, 1) infinite, pulse-bar 1.2s ease-in-out infinite;
+        }
+    
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+        }
+        .mint-glow {
+            box-shadow: 0 0 20px rgba(171, 231, 178, 0.2);
+        }
+        .mint-glow-hover:hover {
+            box-shadow: 0 0 35px rgba(171, 231, 178, 0.4);
+        }
+        .scanning-line {
+            background: linear-gradient(to bottom, transparent, #ABE7B2, transparent);
+            height: 2px;
+            width: 100%;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 10;
+        }
+    
+        @layer components {
+            .glass-card {
+                background: rgba(10, 10, 10, 0.8);
+                backdrop-filter: blur(12px);
+                -webkit-backdrop-filter: blur(12px);
+                border: 1px solid rgba(171, 231, 178, 0.1);
+                transition: all 0.3s ease;
+                position: relative;
+            }
+            .glass-card::before {
+                content: '';
+                position: absolute;
+                inset: 0;
+                background: radial-gradient(circle at top left, rgba(171, 231, 178, 0.05), transparent);
+                pointer-events: none;
+            }
+            .glass-card:hover {
+                border-color: #ABE7B2;
+                background: rgba(171, 231, 178, 0.05);
+                transform: translateY(-4px);
+                box-shadow: 0 10px 30px -10px rgba(171, 231, 178, 0.2);
+            }
+            .step-number {
+                -webkit-text-stroke: 1px rgba(171, 231, 178, 0.2);
+                color: transparent;
+            }
+        }
+    </style>
+</head>
+
+<body class="bg-background-dark text-white">
+    <div class="relative min-h-screen flex flex-col overflow-hidden">
+        <div class="absolute inset-0 grid-pattern pointer-events-none"></div>
+        <div
+            class="absolute top-[-10%] left-[-10%] w-[1000px] h-[1000px] bg-primary/10 rounded-full blur-[220px] pointer-events-none">
+        </div>
+        <div
+            class="absolute bottom-[-10%] right-[-10%] w-[800px] h-[800px] bg-thermal-red/5 rounded-full blur-[220px] pointer-events-none">
+        </div>
+        <header
+            class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-8 py-8 lg:px-20 border-b border-primary/10 glass-panel">
+            <div class="flex items-center gap-4">
+                <div class="size-10 flex items-center justify-center bg-primary rounded-sm text-black">
+                    <span class="material-symbols-outlined font-bold text-2xl">radar</span>
+                </div>
+                <h2 class="text-2xl font-bold tracking-tighter text-primary">DEEPDETECT</h2>
+            </div>
+
+            <div class="flex items-center gap-8">
+
+                <a href="#upload-section"
+                    class="bg-primary text-black px-8 py-3 rounded-sm text-[11px] font-black uppercase tracking-[0.2em] hover:brightness-110 transition-all">Access
+                    Terminal</a>
+            </div>
+        </header>
+        <main class="relative flex-1 flex flex-col items-center justify-center px-6 lg:px-20 pt-48 pb-32 min-h-screen">
+            <div class="w-full max-w-7xl grid grid-cols-1 lg:grid-cols-2 gap-20 lg:gap-32 items-center">
+                <div class="flex flex-col gap-12 text-left z-10 py-10">
+                    <div
+                        class="inline-flex items-center gap-4 px-5 py-2 rounded-full bg-primary/5 border border-primary/20 w-fit">
+                        <span class="relative flex h-2.5 w-2.5">
+                            <span
+                                class="animate-ping absolute inline-flex h-full w-full rounded-full bg-primary opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-primary"></span>
+                        </span>
+                        <span class="text-[11px] font-black uppercase tracking-[0.4em] text-primary">Core Engine:
+                            Sentinel-v8.4.1</span>
+                    </div>
+                    <div class="flex flex-col gap-10">
+                        <h1 class="text-7xl lg:text-[11rem] font-bold leading-[0.85] tracking-tighter text-white">
+                            DECODE THE <span class="text-primary">UNREAL.</span>
+                        </h1>
+                        <p
+                            class="text-xl lg:text-3xl text-slate-400 font-light leading-relaxed max-w-2xl border-l-4 border-primary/20 pl-10">
+                            Sovereign deepfake forensic analysis. Distinguishing biological reality from algorithmic
+                            synthesis with high-fidelity thermal biometric mapping.
+                        </p>
+                    </div>
+                    <div class="flex flex-wrap gap-6 pt-8">
+                        <a href="#upload-section"
+                            class="group relative px-16 py-8 bg-primary text-black text-sm font-black uppercase tracking-widest transition-all hover:pr-20">
+                            <span>Scan Source Material</span>
+                            <span
+                                class="material-symbols-outlined absolute right-8 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-all">arrow_forward</span>
+                        </a>
+                        <a href="#how-it-works"
+                            class="px-16 py-8 border border-primary/30 text-primary text-sm font-black uppercase tracking-widest hover:bg-primary/10 transition-all">
+                            Methodology
+                        </a>
+                    </div>
+                </div>
+                <div class="relative flex justify-center items-center scale-110 lg:scale-[1.4] origin-center">
+                    <div
+                        class="relative w-full max-w-[540px] aspect-[4/5] flex items-center justify-center rounded-xl glass-panel p-2 overflow-hidden face-container">
+                        <div class="relative w-full h-full overflow-hidden rounded-lg">
+                            <img alt="High-quality realistic human face"
+                                class="w-full h-full object-cover colorful-face"
+                                src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnhjg2EC0pzXYfJGkKOSnT7k6d6UPwLX_IViJc-Yc7Ij2OTJ8rz1_ZzfPaI6kMbaVGB9mooIUopbozpk6QZ_-mmzX8PFDmAm9pLvqoLupgdiZ2dpnxhZ5CNcQhJMAv5uCMAOCmEe_o2lMDlJnN9m_mCnY3ewIazfYp_ahJvkNKdfqDm4ovP05gt_XSxCRQ8FCvnDSMUzvsG0VNbi358VOrFCZgA2F2UNYnJ9H7agYI7kiTSpz-9egOQ_pM_zn4Pkga37zwGKptbT4" />
+                            <div class="absolute inset-0 z-10 pointer-events-none opacity-90">
+                                <div class="heatmap-blob absolute top-[10%] left-[20%] w-72 h-72 bg-thermal-red/50 rounded-full"
+                                    style="animation-delay: -1s;"></div>
+                                <div class="heatmap-blob absolute top-[30%] right-[5%] w-64 h-64 bg-thermal-orange/40 rounded-full"
+                                    style="animation-delay: -3s;"></div>
+                                <div class="heatmap-blob absolute bottom-[15%] left-[10%] w-80 h-80 bg-primary/30 rounded-full"
+                                    style="animation-delay: -5s;"></div>
+                                <div class="heatmap-blob absolute top-[45%] left-[35%] w-56 h-56 bg-thermal-red/25 rounded-full"
+                                    style="animation-delay: -7s;"></div>
+                                <div class="heatmap-blob absolute bottom-[5%] right-[25%] w-48 h-48 bg-primary/45 rounded-full"
+                                    style="animation-delay: -2s;"></div>
+                            </div>
+                            <div class="absolute inset-0 overlay-mask z-20"></div>
+                            <div class="absolute inset-0 z-30 pointer-events-none">
+                                <svg class="w-full h-full" viewBox="0 0 400 500">
+                                    <g class="faint-connection stroke-primary/40" fill="none" stroke-width="0.75">
+                                        <path d="M100,120 L300,120 L200,240 L100,120"></path>
+                                        <path d="M100,120 L150,350 L250,350 L300,120"></path>
+                                        <path d="M200,240 L200,350"></path>
+                                        <path d="M150,350 L200,420 L250,350"></path>
+                                        <line opacity="0.2" x1="0" x2="400" y1="100" y2="100"></line>
+                                        <line opacity="0.2" x1="0" x2="400" y1="200" y2="200"></line>
+                                        <line opacity="0.2" x1="0" x2="400" y1="300" y2="300"></line>
+                                        <line opacity="0.2" x1="0" x2="400" y1="400" y2="400"></line>
+                                    </g>
+                                </svg>
+                                <div
+                                    class="biometric-node absolute top-[24%] left-[25%] w-3 h-3 bg-primary rounded-full shadow-[0_0_20px_#ABE7B2]">
+                                </div>
+                                <div class="biometric-node absolute top-[24%] right-[25%] w-3 h-3 bg-primary rounded-full shadow-[0_0_20px_#ABE7B2]"
+                                    style="animation-delay: 0.4s;"></div>
+                                <div class="biometric-node absolute top-[48%] left-[50%] w-3 h-3 bg-thermal-red rounded-full shadow-[0_0_20px_#D10000]"
+                                    style="animation-delay: 0.8s;"></div>
+                                <div class="biometric-node absolute bottom-[30%] left-[37%] w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_15px_#ABE7B2]"
+                                    style="animation-delay: 1.2s;"></div>
+                                <div class="biometric-node absolute bottom-[30%] right-[37%] w-2.5 h-2.5 bg-primary rounded-full shadow-[0_0_15px_#ABE7B2]"
+                                    style="animation-delay: 1.6s;"></div>
+                                <div class="biometric-node absolute bottom-[16%] left-[50%] w-4 h-4 bg-thermal-orange rounded-full shadow-[0_0_25px_#FF8C00]"
+                                    style="animation-delay: 2.0s;"></div>
+                            </div>
+                        </div>
+                        <div class="absolute inset-x-0 scan-line z-40"></div>
+                        <div class="absolute top-10 left-10 flex flex-col gap-1.5 z-50">
+                            <div class="flex items-center gap-2.5">
+                                <span class="size-2 rounded-full bg-primary animate-pulse"></span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.3em] text-primary">Thermal
+                                    Distribution Map</span>
+                            </div>
+                            <div class="text-[28px] font-bold text-white tabular-nums tracking-tighter">HEAT_ISO_V2.0.4
+                            </div>
+                        </div>
+                        <div class="absolute bottom-10 right-10 z-50 text-right">
+                            <p class="text-[10px] font-black uppercase tracking-[0.3em] text-primary mb-3">Anomaly
+                                Detection</p>
+                            <div class="w-48 h-2 bg-white/10 rounded-full overflow-hidden">
+                                <div class="h-full bg-primary anomaly-progress-active rounded-full"></div>
+                            </div>
+                            <p class="text-[11px] text-primary/80 mt-3 font-mono tracking-[0.2em] uppercase">Delta:
+                                <span class="animate-pulse">Active Stream</span>
+                            </p>
+                        </div>
+                        <div class="absolute top-6 left-6 w-8 h-8 border-t-2 border-l-2 border-primary/40"></div>
+                        <div class="absolute top-6 right-6 w-8 h-8 border-t-2 border-r-2 border-primary/40"></div>
+                        <div class="absolute bottom-6 left-6 w-8 h-8 border-b-2 border-l-2 border-primary/40"></div>
+                        <div class="absolute bottom-6 right-6 w-8 h-8 border-b-2 border-r-2 border-primary/40"></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+    </div>
+
+    <div id="how-it-works"
+        class="relative min-h-screen w-full flex flex-col items-center justify-center py-20 px-4 md:px-20 lg:px-40 overflow-hidden">
+        <div class="absolute top-0 left-0 w-full h-full pointer-events-none opacity-20">
+            <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-primary/20 blur-[120px] rounded-full"></div>
+            <div class="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-primary/10 blur-[120px] rounded-full">
+            </div>
+        </div>
+        <div class="max-w-[1200px] w-full z-10">
+            <div class="flex flex-col items-center mb-16 text-center">
+                <span
+                    class="text-primary text-sm font-bold tracking-[0.2em] uppercase mb-4 px-4 py-1 bg-primary/10 rounded-full border border-primary/20">
+                    Process
+                </span>
+                <h2 class="text-4xl md:text-5xl font-bold leading-tight tracking-tight mb-6">
+                    How Our Engine <span class="text-primary">Secures</span> Truth
+                </h2>
+                <p class="text-white/70 max-w-2xl text-lg leading-relaxed">
+                    We deploy a multi-layered neural architecture to dissect digital media, exposing synthetic
+                    manipulations that escape the human eye.
+                </p>
+            </div>
+            <div class="relative grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div
+                    class="hidden md:block absolute top-1/2 left-[15%] right-[15%] h-[1px] border-t border-dashed border-primary/30 -z-10">
+                </div>
+                <div class="glass-card flex flex-col p-8 rounded-xl relative overflow-hidden group">
+                    <div
+                        class="absolute top-4 right-6 step-number text-7xl font-black select-none opacity-20 group-hover:opacity-40 transition-opacity">
+                        01
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl"
+                            style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48">
+                            memory
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Neural Analysis</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Deep scan of facial geometry and temporal consistency using our proprietary AI model to detect
+                        biometric anomalies.
+                    </p>
+                    <div
+                        class="mt-6 flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                        Scanning Geometry
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    </div>
+                </div>
+                <div class="glass-card flex flex-col p-8 rounded-xl relative overflow-hidden group">
+                    <div
+                        class="absolute top-4 right-6 step-number text-7xl font-black select-none opacity-20 group-hover:opacity-40 transition-opacity">
+                        02
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl"
+                            style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48">
+                            grid_view
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Pattern Recognition</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Identification of microscopic artifacts and synthetic textures—pixel-level inconsistencies
+                        invisible to the human eye.
+                    </p>
+                    <div
+                        class="mt-6 flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                        Artifact Detection
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    </div>
+                </div>
+                <div class="glass-card flex flex-col p-8 rounded-xl relative overflow-hidden group">
+                    <div
+                        class="absolute top-4 right-6 step-number text-7xl font-black select-none opacity-20 group-hover:opacity-40 transition-opacity">
+                        03
+                    </div>
+                    <div
+                        class="w-14 h-14 bg-primary/10 border border-primary/20 rounded-lg flex items-center justify-center mb-6 text-primary group-hover:scale-110 transition-transform">
+                        <span class="material-symbols-outlined text-4xl"
+                            style="font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 48">
+                            verified_user
+                        </span>
+                    </div>
+                    <h3 class="text-xl font-bold mb-3 text-white">Verification</h3>
+                    <p class="text-white/60 text-sm leading-relaxed">
+                        Final validation against our global threat database, generating a comprehensive authenticity
+                        report and hash signature.
+                    </p>
+                    <div
+                        class="mt-6 flex items-center gap-2 text-primary text-xs font-bold uppercase tracking-wider opacity-0 group-hover:opacity-100 transition-opacity">
+                        Identity Verified
+                        <span class="w-2 h-2 rounded-full bg-primary animate-pulse"></span>
+                    </div>
+                </div>
+            </div>
+            <div
+                class="mt-20 p-8 rounded-2xl bg-gradient-to-r from-primary/10 via-card-black to-primary/5 border border-primary/20 flex flex-col md:flex-row items-center justify-between gap-8">
+                <div class="flex-1">
+                    <h4 class="text-2xl font-bold mb-2">Ready to scan your media?</h4>
+                    <p class="text-white/60 text-sm">Upload a video or image file to receive a full forensic analysis
+                        report in seconds.</p>
+                </div>
+                <div class="flex gap-4">
+                    <a href="#upload-section"
+                        class="px-8 py-3 bg-primary text-black font-bold rounded-lg hover:bg-white transition-colors whitespace-nowrap">
+                        Start Detection
+                    </a>
+                    <button
+                        class="px-8 py-3 border border-primary/30 text-primary font-bold rounded-lg hover:bg-primary/10 transition-colors whitespace-nowrap">
+                        View Sample Report
+                    </button>
+                </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-6 mt-16 px-4">
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary/80"
+                        style="font-variation-settings: 'wght' 300">speed</span>
+                    <span class="text-xs font-medium text-white/70">Real-time Processing</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary/80"
+                        style="font-variation-settings: 'wght' 300">security</span>
+                    <span class="text-xs font-medium text-white/70">Encrypted Uploads</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary/80"
+                        style="font-variation-settings: 'wght' 300">android_fingerprint</span>
+                    <span class="text-xs font-medium text-white/70">Biometric Mapping</span>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="material-symbols-outlined text-primary/80"
+                        style="font-variation-settings: 'wght' 300">description</span>
+                    <span class="text-xs font-medium text-white/70">Forensic PDF Reports</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="upload-section" class="relative flex h-auto min-h-screen w-full flex-col group/design-root overflow-x-hidden">
+        <div class="layout-container flex h-full grow flex-col">
+
+            <main class="flex-1 flex flex-col items-center py-12 px-6 lg:px-40">
+                <div class="layout-content-container flex flex-col max-w-[1024px] w-full gap-8">
+                    <div
+                        class="flex flex-wrap justify-between items-end gap-4 p-4 border-l-4 border-primary bg-primary/5 rounded-r-lg">
+                        <div class="flex min-w-72 flex-col gap-2">
+                            <p class="text-4xl font-black leading-tight tracking-[-0.033em] text-white">Detection Engine
+                            </p>
+                            <p class="text-slate-400 text-base font-normal leading-normal">Upload video files for
+                                multi-layered forensic analysis.</p>
+                        </div>
+
+                    </div>
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+                        <div class="lg:col-span-7 flex flex-col gap-6">
+                            <div class="flex flex-col">
+                                <div
+                                    class="flex flex-col items-center gap-6 rounded-xl border-2 border-dashed border-primary/40 bg-card-dark px-6 py-20 mint-glow mint-glow-hover transition-all group">
+                                    <div class="flex flex-col items-center gap-4 text-center">
+                                        <span
+                                            class="material-symbols-outlined text-primary text-6xl drop-shadow-[0_0_8px_rgba(171,231,178,0.5)]">cloud_upload</span>
+                                        <div class="flex max-w-[480px] flex-col items-center gap-2">
+                                            <p class="text-lg font-bold leading-tight tracking-[-0.015em] text-white">
+                                                Drag and drop video files here</p>
+                                            <p class="text-sm text-slate-500">Supports MP4, MOV, and AVI. Maximum file
+                                                size 500MB.</p>
+                                        </div>
+                                    </div>
+                                    <button
+                                        class="flex min-w-[160px] cursor-pointer items-center justify-center rounded-lg h-12 px-6 bg-primary text-black text-sm font-bold shadow-lg shadow-primary/20 hover:scale-[1.02] active:scale-[0.98] transition-all">
+                                        <span class="truncate">Browse Files</span>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="bg-card-dark rounded-xl p-6 border border-white/10 shadow-xl">
+                                <div class="flex items-center gap-2 mb-4">
+                                    <span class="material-symbols-outlined text-primary">settings_suggest</span>
+                                    <h3 class="text-lg font-bold leading-tight tracking-[-0.015em] text-white">Analysis
+                                        Parameters</h3>
+                                </div>
+                                <div class="space-y-1">
+                                    <label
+                                        class="flex gap-x-3 py-3 flex-row-reverse justify-between items-center cursor-pointer group">
+                                        <input checked=""
+                                            class="h-5 w-5 rounded border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 focus:border-primary focus:outline-none transition-all"
+                                            type="checkbox" />
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">filter_frames</span>
+                                            <p class="text-base font-medium text-slate-300 group-hover:text-white">
+                                                Frame-by-frame analysis</p>
+                                        </div>
+                                    </label>
+                                    <label
+                                        class="flex gap-x-3 py-3 flex-row-reverse justify-between items-center cursor-pointer group">
+                                        <input checked=""
+                                            class="h-5 w-5 rounded border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 focus:border-primary focus:outline-none transition-all"
+                                            type="checkbox" />
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">graphic_eq</span>
+                                            <p class="text-base font-medium text-slate-300 group-hover:text-white">Audio
+                                                consistency check</p>
+                                        </div>
+                                    </label>
+                                    <label
+                                        class="flex gap-x-3 py-3 flex-row-reverse justify-between items-center cursor-pointer group">
+                                        <input
+                                            class="h-5 w-5 rounded border-white/20 border-2 bg-transparent text-primary checked:bg-primary checked:border-primary focus:ring-0 focus:ring-offset-0 focus:border-primary focus:outline-none transition-all"
+                                            type="checkbox" />
+                                        <div class="flex items-center gap-3">
+                                            <span
+                                                class="material-symbols-outlined text-slate-500 group-hover:text-primary transition-colors">data_object</span>
+                                            <p class="text-base font-medium text-slate-300 group-hover:text-white">
+                                                Metadata verification</p>
+                                        </div>
+                                    </label>
+                                </div>
+                                <button
+                                    class="w-full mt-6 py-4 bg-primary rounded-lg font-bold text-black flex items-center justify-center gap-2 hover:brightness-110 transition-all shadow-lg shadow-primary/10">
+                                    <span class="material-symbols-outlined">play_circle</span>
+                                    Start Analysis
+                                </button>
+                            </div>
+                        </div>
+                        <div class="lg:col-span-5 flex flex-col gap-6">
+                            <div
+                                class="relative w-full aspect-video bg-black rounded-xl overflow-hidden border border-white/10 shadow-2xl group">
+                                <div class="absolute inset-0 bg-cover bg-center opacity-40"
+                                    style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuBIV8AQeeORgCkdLG7SO4flx08g7YhHCajEAwpb5PyWNTSAn8Wj0LE30WTMVXxNMnDCCU8VzkhXjehsHwnQKCulO_fF7cQ_IDJ6FMW91Xr7aQVrqka9p3x_kSfv6EeiulDWB8sITxGHTJg1GzvZrl3omss7F3p6DtNOqgfXg6hLqj4y3iZxzosw0R88ObRJXkdBBemRwo-oCe0hQZko1WxbYYU1mYiB3LnGH-v-cZ5dSvG3-h8kNLORlXD71hFTMiCf1EJN2_FX2Zg');">
+                                </div>
+                                <div class="scanning-line" style="top: 40%;"></div>
+                                <div
+                                    class="absolute inset-0 p-4 flex flex-col justify-between z-20 pointer-events-none">
+                                    <div class="flex justify-between items-start">
+                                        <div class="bg-black/60 backdrop-blur-sm p-2 rounded border border-white/10">
+                                            <p class="text-[10px] uppercase tracking-widest text-slate-400">Forensic
+                                                Feed</p>
+                                            <p class="text-xs font-mono text-primary">ENCRYPTED_STREAM_01</p>
+                                        </div>
+                                        <div
+                                            class="bg-primary/80 backdrop-blur-sm px-3 py-1 rounded-full flex items-center gap-2">
+                                            <span class="size-2 bg-black rounded-full animate-pulse"></span>
+                                            <p class="text-[10px] font-bold uppercase text-black tracking-tighter">Live
+                                                Scan</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col gap-2">
+                                        <div class="flex justify-between items-end">
+                                            <div
+                                                class="bg-black/80 backdrop-blur-sm p-3 rounded-lg border border-primary/30">
+                                                <p class="text-[10px] font-bold text-primary mb-1 uppercase">Real
+                                                    Consistency</p>
+                                                <p class="text-2xl font-black text-primary">82.1%</p>
+                                            </div>
+                                            <div
+                                                class="bg-black/80 backdrop-blur-sm p-3 rounded-lg border border-orange-500/30">
+                                                <p class="text-[10px] font-bold text-orange-400 mb-1 uppercase">Anomaly
+                                                    Score</p>
+                                                <p class="text-2xl font-black text-orange-500">17.9%</p>
+                                            </div>
+                                        </div>
+                                        <div class="w-full h-1.5 bg-white/10 rounded-full overflow-hidden">
+                                            <div class="h-full bg-primary" style="width: 82.1%;"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div
+                                    class="absolute bottom-0 inset-x-0 h-12 bg-gradient-to-t from-black to-transparent flex items-center px-4 gap-4 opacity-0 group-hover:opacity-100 transition-opacity">
+                                    <span class="material-symbols-outlined text-white text-sm">pause</span>
+                                    <div class="flex-1 h-1 bg-white/20 rounded-full">
+                                        <div class="w-2/3 h-full bg-primary rounded-full relative">
+                                            <div
+                                                class="absolute right-0 top-1/2 -translate-y-1/2 size-3 bg-primary rounded-full shadow-[0_0_8px_rgba(171,231,178,0.8)]">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <span class="material-symbols-outlined text-white text-sm">volume_up</span>
+                                    <span class="material-symbols-outlined text-white text-sm">fullscreen</span>
+                                </div>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div class="bg-card-dark p-4 rounded-xl border border-white/10">
+                                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">
+                                        Authenticity Score</p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-2xl font-bold text-primary">99.2%</p>
+                                        <span class="material-symbols-outlined text-primary text-sm">verified</span>
+                                    </div>
+                                </div>
+                                <div class="bg-card-dark p-4 rounded-xl border border-white/10">
+                                    <p class="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Face
+                                        Mesh Status</p>
+                                    <div class="flex items-center gap-2">
+                                        <p class="text-2xl font-bold text-white uppercase">Valid</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-primary/5 border border-primary/20 p-4 rounded-xl">
+                                <h4 class="text-sm font-bold flex items-center gap-2 mb-2 text-primary">
+                                    <span class="material-symbols-outlined text-primary text-base">info</span>
+                                    Analysis Insight
+                                </h4>
+                                <p class="text-sm text-slate-400 leading-relaxed">
+                                    Primary analysis shows high temporal consistency. Skin textures and micro-movements
+                                    align with natural physiological patterns. Metadata confirms origin from verified
+                                    source device.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+            <footer
+                class="relative z-50 px-8 lg:px-20 py-12 flex flex-col md:flex-row justify-between items-center gap-8 border-t border-primary/10 glass-panel">
+                <div class="flex items-center gap-10 text-[11px] font-bold uppercase tracking-[0.2em] text-slate-500">
+                    <p>© 2024 DEEPDETECT_SYSTEMS</p>
+                    <div class="flex gap-8">
+                        <a class="hover:text-primary transition-colors" href="#">Security Architecture</a>
+                        <a class="hover:text-primary transition-colors" href="#">Legal Protocol</a>
+                    </div>
+                </div>
+                <div class="flex gap-8">
+                    <a class="w-11 h-11 flex items-center justify-center border border-white/10 hover:border-primary/50 transition-all rounded-sm"
+                        href="#">
+                        <span class="material-symbols-outlined text-base text-slate-400">terminal</span>
+                    </a>
+                    <a class="w-11 h-11 flex items-center justify-center border border-white/10 hover:border-primary/50 transition-all rounded-sm"
+                        href="#">
+                        <span class="material-symbols-outlined text-base text-slate-400">hub</span>
+                    </a>
+                </div>
+                <p class="text-xs text-slate-500">© 2024 DeepfakeShield Forensic Labs. All rights reserved.</p>
+            </footer>
+        </div>
+    </div>
+</body>
+
+</html>
